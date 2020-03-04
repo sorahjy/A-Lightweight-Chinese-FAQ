@@ -1,7 +1,7 @@
 from keras.callbacks import ModelCheckpoint
 
 import faq_preprocess as pp
-import ljqpy
+import utils
 import jieba,random
 import h5py
 from keras.models import Model
@@ -99,7 +99,7 @@ except:
 
 # functions for training
 
-data = ljqpy.LoadCSV('data/train_data.txt')
+data = utils.LoadCSV('data/train_data.txt')
 
 def NoiseAdd(sen):
     for i in range(2):
@@ -133,8 +133,8 @@ def train():
 
 
 # Functions for prediction
-word_idf = ljqpy.LoadDict(r'data/wordlist.txt', float)
-char_idf = ljqpy.LoadDict(r'data/charlist.txt', float)
+word_idf = utils.LoadDict(r'data/wordlist.txt', float)
+char_idf = utils.LoadDict(r'data/charlist.txt', float)
 
 
 def ToWordVector(Q):
@@ -146,7 +146,7 @@ def ToWordVector(Q):
 
 
 def ToCharVector(Q):
-    cs = [x for x in Q if ljqpy.IsChsStr(x)]
+    cs = [x for x in Q if utils.IsChsStr(x)]
     ret = {}
     for x in cs:
         ret[x] = ret.get(x, 0) + 1
@@ -203,6 +203,7 @@ def ModelPred(tdata):
         char_idf_sim.append(TF_Sim(qc, uc))
     final_pred_ret = []
     for i in range(inum):
+
         final_pred_ret.append(0.3 * pred[i] + 0.35 * word_idf_sim[i] + 0.35 * char_idf_sim[i])
     lst_final_pred_ret = list(enumerate(final_pred_ret))
     lst_final_pred_ret = sorted(lst_final_pred_ret, key=lambda x: x[1], reverse=True)
@@ -227,5 +228,5 @@ def Answer(q):
 
 if __name__ == '__main__':
     # train()
-    for x in ShowCandidate('为什么有植物会指南'):
+    for x in ShowCandidate('为什么植物会指南'):
         print(x)

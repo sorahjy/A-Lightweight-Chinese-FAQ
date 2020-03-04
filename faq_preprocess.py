@@ -1,11 +1,11 @@
-import ljqpy
+import utils
 import jieba
 import numpy as np
 import os
 
-id2w = ['<PAD>', '<UNK>'] + [x[0] for x in ljqpy.LoadCSV('data/wordlist.txt') if int(x[1]) > 2]
+id2w = ['<PAD>', '<UNK>'] + [x[0] for x in utils.LoadCSV('data/wordlist.txt') if int(x[1]) > 2]
 w2id = {v: k for k, v in enumerate(id2w)}
-id2c = ['<PAD>', '<UNK>'] + [x[0] for x in ljqpy.LoadCSV('data/charlist.txt') if int(x[1]) > 2]
+id2c = ['<PAD>', '<UNK>'] + [x[0] for x in utils.LoadCSV('data/charlist.txt') if int(x[1]) > 2]
 c2id = {v: k for k, v in enumerate(id2c)}
 
 def MakeSen(sen, ssr=True):
@@ -25,17 +25,17 @@ def MakeSen(sen, ssr=True):
 
 def ExtendCandidateQuestionIndexing():
 	ret = []
-	ext_cands = ljqpy.LoadCSV(r'data/qa_candidate_extend.txt')
-	index = max([int(x) for x in np.array(ljqpy.LoadCSV(r'data/train_data.txt'))[:,0]])+1
+	ext_cands = utils.LoadCSV(r'data/qa_candidate_extend.txt')
+	index = max([int(x) for x in np.array(utils.LoadCSV(r'data/train_data.txt'))[:, 0]]) + 1
 	for x in ext_cands:
 		ret.append([index,x[0],x[1]])
 		index+=1
-	ljqpy.SaveCSV(ret,r'data/qa_candidate_extend.txt')
+	utils.SaveCSV(ret, r'data/qa_candidate_extend.txt')
 
 def LoadCandidateData():
 	ret = []
 	for file in os.listdir(r'data/candidates'):
-		ret+=(ljqpy.LoadCSV(os.path.join(r'data/candidates',file)))
+		ret+=(utils.LoadCSV(os.path.join(r'data/candidates', file)))
 	return {str(ret.index(x)):[x[0], x[1], MakeSen(x[0], ssr=False)[0], MakeSen(x[0], ssr=False)[1]] for x in ret}
 
 def GenerateInvertedTable(corpus):
@@ -72,7 +72,7 @@ def ToWordVector(Q):
 	return ret
 
 def ToCharVector(Q):
-	cs = [x for x in Q if ljqpy.IsChsStr(x)]
+	cs = [x for x in Q if utils.IsChsStr(x)]
 	ret = {}
 	for x in cs:
 		ret[x] = ret.get(x,0)+1
@@ -87,5 +87,4 @@ def GenerateCandidateTFVector(corpus):
 		char_tf_tab[ind] = ToCharVector(q)
 	return [word_tf_tab,char_tf_tab]
 if __name__ == '__main__':
-	#ExtendCandidateQuestionIndexing()
 	pass

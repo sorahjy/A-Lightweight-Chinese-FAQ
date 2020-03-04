@@ -1,5 +1,5 @@
 import random
-import ljqpy
+import utils
 from faq_preprocess import LoadCandidateData
 
 data = LoadCandidateData()
@@ -23,4 +23,4 @@ for i in range(2000):
 
 random.shuffle(d)
 
-ljqpy.SaveList(d,'data/train_data.txt')
+utils.SaveList(d, 'data/train_data.txt')
