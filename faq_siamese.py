@@ -3,13 +3,11 @@ from keras.callbacks import ModelCheckpoint
 import faq_preprocess as pp
 import utils
 import jieba,random
-import h5py
 from keras.models import Model
 from keras.layers import *
 from keras.optimizers import *
 from keras.initializers import *
 import math
-from keras.utils import plot_model
 
 
 # Hyper parameter
@@ -55,8 +53,7 @@ def Accuracy(y_true, y_pred):
 uw_input = Input(shape=(30,), dtype='int32')
 uc_input = Input(shape=(30,), dtype='int32')
 
-with h5py.File('data/w2v.h5', 'r') as dfile: w2v = dfile['w2v'][:]
-w_emb_layer = Embedding(nwords, 50, weights=[w2v], trainable=True)
+w_emb_layer = Embedding(nwords, 50, trainable=True)
 c_emb_layer = Embedding(nchars, 50)
 
 uw_emb = w_emb_layer(uw_input)
@@ -88,7 +85,6 @@ model = Model([uw_input, uc_input, vw_input, vc_input], distance)
 model.compile(loss=ContrastiveLoss, optimizer=Adam(0.001), metrics=[Accuracy])
 model.summary()
 
-# plot_model(sen_model, to_file='model.png')
 mfile = r'models/faq_siamese.h5'
 
 try:
@@ -227,6 +223,10 @@ def Answer(q):
 
 
 if __name__ == '__main__':
-    # train()
-    for x in ShowCandidate('为什么植物会指南'):
-        print(x)
+    train()
+    print('*' * 30)
+    exps = ['为什么植物会指南','小孩为什么不能吃补品中药？']
+    for exp in exps:
+        for x in ShowCandidate(exp):
+            print(x)
+        print('*'*30)
