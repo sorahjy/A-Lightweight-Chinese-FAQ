@@ -1,6 +1,6 @@
 # A Lightweight Chinese FAQ
 
-A fast and efficient chinese FAQ system with One shot learning (Siamese) and TF-IDF techniques.
+A fast and efficient chinese FAQ approach with One shot learning (Siamese) and TF-IDF techniques.
 
 
 ### requirements
